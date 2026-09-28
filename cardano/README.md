@@ -10,7 +10,7 @@ Proyecto compartido por las clases de Cardano (4, 5, 8, 9).
 | Herramienta | Versión mínima | Estado en este entorno |
 |-------------|----------------|------------------------|
 | `aiken` | v1.1.0 | ✅ v1.1.21 instalado |
-| `aiken-lang/stdlib` | main | ✅ descargado en primer `aiken check` |
+| `aiken-lang/stdlib` | v3.1.0 | ✅ descargado en primer `aiken check` |
 
 ## Instalación paso a paso
 

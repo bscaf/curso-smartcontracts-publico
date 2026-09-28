@@ -10,7 +10,9 @@ user = "garbervetsky"
 project = "curso-smartcontracts-publico"
 platform = "github"
 
+# stdlib fijada en un tag, no en "main": main pide el compilador más nuevo y con
+# Aiken v1.1.21 falla al compilarla (sin mensaje de error). v3.1.0 es la de v1.1.21.
 [[dependencies]]
 name = "aiken-lang/stdlib"
-version = "main"
+version = "v3.1.0"
 source = "github"

@@ -171,7 +171,7 @@ test cancel_despues_del_deadline_pasa() {
 //
 //   [[dependencies]]
 //   name = "aiken-lang/fuzz"
-//   version = "main"
+//   version = "v2.2.0"
 //   source = "github"
 //
 // use aiken/fuzz
