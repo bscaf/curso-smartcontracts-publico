@@ -127,7 +127,16 @@ halmos                                 # verificación simbólica de test/halmos
    solvencia? ¿A cuántas llamadas reduce la secuencia? Volver a comentarlo al terminar.
    Después correr `halmos --contract VaultVulnerableHalmos`: con `AtacanteUnaVez` vacío da
    `[PASS]`. ¿Por qué? Escribirlo (consigna en su comentario) y volver a correr: ¿qué secuencia
-   devuelve? ¿Qué afirma ese `FAIL` que no afirmaba el del fuzzer?
+   devuelve? ¿Qué afirma ese `FAIL` que no afirmaba el del fuzzer? Correrlo también con
+   `--invariant-depth 1`: ¿qué da, y por qué?
+
+   halmos imprime, debajo de cada llamada de la secuencia, su traza completa. Para ver sólo los
+   valores y las llamadas:
+
+   ```bash
+   halmos --contract VaultVulnerableHalmos 2>&1 | sed 's/\x1b\[[0-9;]*m//g' \
+     | grep -E '^    (p_|CALL)|^\[' | sed -E 's/ \(value:.*//'
+   ```
 
 4. **Dos hallazgos**, uno por bug, con este formato:
 
