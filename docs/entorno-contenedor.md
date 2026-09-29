@@ -273,7 +273,7 @@ del contenedor (requiere red la primera vez):
 # agregar a cardano/aiken.toml
 [[dependencies]]
 name = "aiken-lang/fuzz"
-version = "main"
+version = "v2.2.0"
 source = "github"
 ```
 
