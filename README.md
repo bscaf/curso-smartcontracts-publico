@@ -50,11 +50,25 @@ Si usás macOS, también podés instalarlo con Homebrew:
 brew install podman
 ```
 
+Podes crearla asi:
 
 ```bash
 ./scripts/build-image.sh arm64      # Apple Silicon
 ./scripts/build-image.sh amd64      # labs Intel
 ```
+
+O levantar una imagen comprimida de aca: [Repo Imagenes Podman](https://drive.google.com/drive/folders/1_lzZMsTSA2rjcV9YkzBjaUYWqbT3g0EY?usp=drive_link) y despues hacer: 
+
+```bash
+podman load -i path-a-imagen 
+````
+
+Y cambiarle el nombre. Por ejemplo:
+
+```bash
+podman tag <IMAGE_ID_O_NOMBRE_ACTUAL> curso-sc:arm64
+````
+
 
 Y para entrar:
 
