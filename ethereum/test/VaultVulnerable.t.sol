@@ -27,6 +27,8 @@ contract ReentrancyAttacker {
 
     // TODO: el ataque. Recibe ETH del que lo lanza (msg.value), lo deposita en
     // el vault y dispara el robo.
+    // Ojo: para poder parar a tiempo en receive(), tal vez te sirva 
+    // guardarte cuánto le estás sacando al vault en cada reentrada.
     function attack() external payable {
     }
 

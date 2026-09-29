@@ -33,7 +33,7 @@ depth = 50
 # Sin esta línea solc elige z3 y en arm64 el análisis NO CORRE: se ve como
 # "Warning (7649): CHC analysis was not possible since no Horn solver was found".
 # [profile.default.model_checker]
-# contracts        = { "src/Vault.sol" = ["Vault"] }
+# contracts = { "src/VaultVulnerable.sol" = ["VaultVulnerable"] }
 # engine           = "chc"                          # chc (no acotado) o bmc (acotado)
 # solvers          = ["z3", "eld"]
 # targets          = ["assert", "overflow", "underflow", "divByZero"]
