@@ -2,7 +2,7 @@
 
 **Entregable, en pares: un reporte corto de hallazgos y un fix verificado.** Todo se corre desde
 `ethereum/`. Para `halmos` hace falta la imagen reconstruida después de este cambio
-(`./scripts/build-image.sh`).
+(`./scripts/build-image.sh`). También podes bajar la imagen de este [repo](https://drive.google.com/drive/folders/1_lzZMsTSA2rjcV9YkzBjaUYWqbT3g0EY?usp=drive_link).
 
 1. **Análisis estático y triage.** Correr `slither src/VaultVulnerable.sol` y clasificar cada
    hallazgo como real o ruido, con una frase que lo justifique. Después correr
