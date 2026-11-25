@@ -1,0 +1,18 @@
+Multiple frameworks detected: Foundry, solc, Solc-json. Using Foundry (highest priority). Use --compile-force-framework to override.
+'forge clean' running (wd: /home/user/curso-smartcontracts-publico/ethereum)
+'forge config --json' running
+'forge build --build-info --deny never src/MiVaultFixed.sol' running (wd: /home/user/curso-smartcontracts-publico/ethereum)
+INFO:Printers:
+Contract MiVaultFixed
++-------------+-------------------------+--------------------------+
+| Function    | State variables written | Conditions on msg.sender |
++-------------+-------------------------+--------------------------+
+| constructor | ['admin']               | []                       |
+| deposit     | ['balances']            | []                       |
+| withdraw    | ['balances']            | []                       |
+| setAdmin    | ['admin']               | ['msg.sender != admin']  |
+| sweep       | []                      | ['msg.sender != admin']  |
+| balanceOf   | []                      | []                       |
++-------------+-------------------------+--------------------------+
+
+INFO:Slither:src/MiVaultFixed.sol analyzed (1 contracts)

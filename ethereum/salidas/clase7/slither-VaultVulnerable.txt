@@ -1,0 +1,37 @@
+Multiple frameworks detected: Foundry, solc, Solc-json. Using Foundry (highest priority). Use --compile-force-framework to override.
+'forge clean' running (wd: /home/user/curso-smartcontracts-publico/ethereum)
+'forge config --json' running
+'forge build --build-info --deny never src/VaultVulnerable.sol' running (wd: /home/user/curso-smartcontracts-publico/ethereum)
+INFO:Detectors:
+Detector: reentrancy-eth
+Reentrancy in VaultVulnerable.withdraw() (src/VaultVulnerable.sol#29-39):
+	External calls:
+	- (ok,None) = msg.sender.call{value: amount}() (src/VaultVulnerable.sol#33)
+	State variables written after the call(s):
+	- balances[msg.sender] = 0 (src/VaultVulnerable.sol#36)
+	VaultVulnerable.balances (src/VaultVulnerable.sol#9) can be used in cross function reentrancies:
+	- VaultVulnerable.balanceOf(address) (src/VaultVulnerable.sol#53-55)
+	- VaultVulnerable.deposit() (src/VaultVulnerable.sol#23-26)
+	- VaultVulnerable.withdraw() (src/VaultVulnerable.sol#29-39)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-1
+INFO:Detectors:
+Detector: missing-zero-check
+VaultVulnerable.setAdmin(address).nuevo (src/VaultVulnerable.sol#42) lacks a zero-check on :
+		- admin = nuevo (src/VaultVulnerable.sol#43)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-zero-address-validation
+INFO:Detectors:
+Detector: reentrancy-events
+Reentrancy in VaultVulnerable.withdraw() (src/VaultVulnerable.sol#29-39):
+	External calls:
+	- (ok,None) = msg.sender.call{value: amount}() (src/VaultVulnerable.sol#33)
+	Event emitted after the call(s):
+	- Withdraw(msg.sender,amount) (src/VaultVulnerable.sol#38)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-4
+INFO:Detectors:
+Detector: low-level-calls
+Low level call in VaultVulnerable.withdraw() (src/VaultVulnerable.sol#29-39):
+	- (ok,None) = msg.sender.call{value: amount}() (src/VaultVulnerable.sol#33)
+Low level call in VaultVulnerable.sweep() (src/VaultVulnerable.sol#47-51):
+	- (ok,None) = admin.call{value: address(this).balance}() (src/VaultVulnerable.sol#49)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#low-level-calls
+INFO:Slither:src/VaultVulnerable.sol analyzed (1 contracts with 102 detectors), 5 result(s) found

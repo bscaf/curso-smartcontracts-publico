@@ -38,26 +38,66 @@ contract AlcanciaTest is Test {
     /// El caso feliz: alice ahorra 3 ETH, retira, y su ahorro queda en 0
     /// **y** el ETH volvió a su cuenta.
     function test_Retirar_DevuelveTodoElAhorro() public {
-        fail("TODO: escribir este test");
+        vm.startPrank(alice);
+        alcancia.ahorrar{value: 3 ether}();
+        uint256 antes = alice.balance;
+
+        vm.expectEmit(true, false, false, true);
+        emit Alcancia.Retiro(alice, 3 ether);
+        alcancia.retirar();
+
+        assertEq(alcancia.miAhorro(), 0);
+        assertEq(alice.balance, antes + 3 ether);
+        vm.stopPrank();
     }
 
     /// Retirar sin haber ahorrado nada tiene que revertir con `SinAhorros`.
     /// Pista: `vm.expectRevert(Alcancia.SinAhorros.selector);`
     function test_Retirar_RevierteSinAhorros() public {
-        fail("TODO: escribir este test");
+        vm.prank(alice);
+        vm.expectRevert(Alcancia.SinAhorros.selector);
+        alcancia.retirar();
     }
 
     /// Lo que ahorró alice no puede afectar lo de bob.
     /// (Es el análogo del `test_BalancesAreIsolated` del Vault.)
     function test_AhorrosAisladosEntreUsuarios() public {
-        fail("TODO: escribir este test");
+        vm.prank(alice);
+        alcancia.ahorrar{value: 2 ether}();
+        vm.prank(bob);
+        alcancia.ahorrar{value: 5 ether}();
+
+        vm.prank(alice);
+        alcancia.retirar();
+
+        vm.prank(alice);
+        assertEq(alcancia.miAhorro(), 0);
+        vm.prank(bob);
+        assertEq(alcancia.miAhorro(), 5 ether);   // lo de bob, intacto
+        assertEq(address(alcancia).balance, 5 ether);
     }
 
     /// El comportamiento con la alcancía CERRADA.
     /// Ojo: este test depende de la decisión de diseño que hayas tomado en
     /// `retirar()`. Escribí el que corresponda a TU implementación y prepará
     /// el argumento de por qué elegiste eso.
+    /// Decisión tomada: cerrar corta los depósitos, no los retiros.
     function test_Retirar_ConLaAlcanciaCerrada() public {
-        fail("TODO: decidir el comportamiento, implementarlo y testearlo");
+        vm.prank(alice);
+        alcancia.ahorrar{value: 2 ether}();
+
+        alcancia.cerrar();                        // el test es el owner
+
+        // ya no se puede ahorrar...
+        vm.prank(alice);
+        vm.expectRevert(Alcancia.EstaCerrada.selector);
+        alcancia.ahorrar{value: 1 ether}();
+
+        // ...pero alice recupera lo suyo
+        uint256 antes = alice.balance;
+        vm.prank(alice);
+        alcancia.retirar();
+        assertEq(alice.balance, antes + 2 ether);
+        assertEq(address(alcancia).balance, 0);
     }
 }

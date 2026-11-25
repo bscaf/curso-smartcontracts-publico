@@ -1,0 +1,25 @@
+Multiple frameworks detected: Foundry, solc, Solc-json. Using Foundry (highest priority). Use --compile-force-framework to override.
+'forge clean' running (wd: /home/user/curso-smartcontracts-publico/ethereum)
+'forge config --json' running
+'forge build --build-info --deny never src/MiVaultFixed.sol' running (wd: /home/user/curso-smartcontracts-publico/ethereum)
+INFO:Detectors:
+Detector: missing-zero-check
+MiVaultFixed.setAdmin(address).nuevo (src/MiVaultFixed.sol#48) lacks a zero-check on :
+		- admin = nuevo (src/MiVaultFixed.sol#50)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-zero-address-validation
+INFO:Detectors:
+Detector: reentrancy-events
+Reentrancy in MiVaultFixed.withdraw() (src/MiVaultFixed.sol#32-45):
+	External calls:
+	- (ok,None) = msg.sender.call{value: amount}() (src/MiVaultFixed.sol#41)
+	Event emitted after the call(s):
+	- Withdraw(msg.sender,amount) (src/MiVaultFixed.sol#44)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-4
+INFO:Detectors:
+Detector: low-level-calls
+Low level call in MiVaultFixed.withdraw() (src/MiVaultFixed.sol#32-45):
+	- (ok,None) = msg.sender.call{value: amount}() (src/MiVaultFixed.sol#41)
+Low level call in MiVaultFixed.sweep() (src/MiVaultFixed.sol#57-61):
+	- (ok,None) = admin.call{value: address(this).balance}() (src/MiVaultFixed.sol#59)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#low-level-calls
+INFO:Slither:src/MiVaultFixed.sol analyzed (1 contracts with 102 detectors), 4 result(s) found

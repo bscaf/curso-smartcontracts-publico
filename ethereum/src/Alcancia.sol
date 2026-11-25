@@ -73,7 +73,24 @@ contract Alcancia {
     //
     // Tu implementación tiene que ser coherente con los tests que escribas.
     //
+    //
+    // Decisión: SÍ se puede retirar con la alcancía cerrada. `cerrar()` corta
+    // la ENTRADA de fondos (ya lo hace `ahorrar()`), no la salida: si también
+    // cortara la salida, el owner podría congelar el ahorro de todos para
+    // siempre con una sola llamada, y ese ETH no sería de nadie. Por eso acá
+    // no se chequea `cerrada`.
     function retirar() external {
-        // TODO: implementar
+        // Check
+        uint256 monto = ahorros[msg.sender];
+        if (monto == 0) revert SinAhorros();
+
+        // Effect
+        ahorros[msg.sender] = 0;
+
+        // Interaction
+        (bool ok, ) = msg.sender.call{value: monto}("");
+        if (!ok) revert TransferenciaFallo();
+
+        emit Retiro(msg.sender, monto);
     }
 }

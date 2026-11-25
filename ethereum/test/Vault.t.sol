@@ -88,6 +88,27 @@ contract VaultTest is Test {
     // camino feliz no distingue una implementacion correcta de una que nunca
     // revierte.
 
+    function test_WithdrawAll_VaciaElSaldoYMandaElEth() public {
+        vm.startPrank(alice);
+        vault.deposit{value: 3 ether}();
+        uint256 antes = alice.balance;
+
+        vm.expectEmit(true, false, false, true);
+        emit Vault.Withdraw(alice, 3 ether);
+        vault.withdrawAll();
+        vm.stopPrank();
+
+        assertEq(vault.balanceOf(alice), 0);            // el libro contable
+        assertEq(alice.balance, antes + 3 ether);       // el ETH llego de verdad
+        assertEq(address(vault).balance, 0);
+    }
+
+    function test_WithdrawAll_RevierteSinSaldo() public {
+        vm.prank(alice);
+        vm.expectRevert(Vault.InsufficientBalance.selector);
+        vault.withdrawAll();
+    }
+
 
     // ── aislamiento entre usuarios ────────────────────────────────────────
 

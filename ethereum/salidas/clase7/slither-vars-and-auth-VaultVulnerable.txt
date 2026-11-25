@@ -1,0 +1,18 @@
+Multiple frameworks detected: Foundry, solc, Solc-json. Using Foundry (highest priority). Use --compile-force-framework to override.
+'forge clean' running (wd: /home/user/curso-smartcontracts-publico/ethereum)
+'forge config --json' running
+'forge build --build-info --deny never src/VaultVulnerable.sol' running (wd: /home/user/curso-smartcontracts-publico/ethereum)
+INFO:Printers:
+Contract VaultVulnerable
++-------------+-------------------------+--------------------------+
+| Function    | State variables written | Conditions on msg.sender |
++-------------+-------------------------+--------------------------+
+| constructor | ['admin']               | []                       |
+| deposit     | ['balances']            | []                       |
+| withdraw    | ['balances']            | []                       |
+| setAdmin    | ['admin']               | []                       |
+| sweep       | []                      | ['msg.sender != admin']  |
+| balanceOf   | []                      | []                       |
++-------------+-------------------------+--------------------------+
+
+INFO:Slither:src/VaultVulnerable.sol analyzed (1 contracts)

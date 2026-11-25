@@ -27,6 +27,7 @@ pragma solidity ^0.8.26;
 import "forge-std/Test.sol";
 import "../../src/Vault.sol";
 import "../../src/VaultVulnerable.sol";
+import "../../src/MiVaultFixed.sol";
 
 // Lo que el handler necesita del vault (tambien sirve para tu version arreglada).
 interface IVault {
@@ -47,15 +48,26 @@ interface IVault {
 // lo que el handler sabe hacer rompe la propiedad", nada mas.
 contract AtacanteUnaVez {
     IVault public vault;
+    bool private reentro;
 
     constructor(IVault _vault) {
         vault = _vault;
     }
 
     function attack() external payable {
+        reentro = false;              // cada ataque arranca de cero
+        vault.deposit{value: msg.value}();
+        vault.withdraw();
     }
 
+    // Una sola reentrada, sin chequear saldos: si al vault no le alcanza, el
+    // camino revierte y halmos lo descarta. Los caminos que sobreviven son
+    // justo los que el vault pudo pagar dos veces.
     receive() external payable {
+        if (!reentro) {
+            reentro = true;
+            vault.withdraw();
+        }
     }
 }
 
@@ -108,8 +120,14 @@ contract VaultVulnerableHalmos is SolvenciaHalmos {
     }
 }
 
-// Cuando tengas tu version arreglada, agrega un contrato como el de arriba que
-// la despliegue en nuevoVault(). Si el arreglo funciona, halmos da PASS.
+// La version arreglada (consigna 5). Si el arreglo funciona, halmos da PASS:
+//     halmos --contract MiVaultFixedHalmos
+//     halmos --contract MiVaultFixedHalmos --invariant-depth 4
+contract MiVaultFixedHalmos is SolvenciaHalmos {
+    function nuevoVault() internal override returns (IVault) {
+        return IVault(address(new MiVaultFixed()));
+    }
+}
 
 // ---------------------------------------------------------------------------
 // Un test simbolico sin invariante: prefijo check_ en vez de test_
