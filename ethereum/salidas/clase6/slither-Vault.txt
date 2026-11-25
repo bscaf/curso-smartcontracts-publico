@@ -1,0 +1,25 @@
+Multiple frameworks detected: Foundry, solc, Solc-json. Using Foundry (highest priority). Use --compile-force-framework to override.
+'forge clean' running (wd: /home/user/curso-smartcontracts-publico/ethereum)
+'forge config --json' running
+'forge build --build-info --deny never src/Vault.sol' running (wd: /home/user/curso-smartcontracts-publico/ethereum)
+INFO:Detectors:
+Detector: reentrancy-events
+Reentrancy in Vault.withdraw(uint256) (src/Vault.sol#26-37):
+	External calls:
+	- (ok,None) = msg.sender.call{value: amount}() (src/Vault.sol#33)
+	Event emitted after the call(s):
+	- Withdraw(msg.sender,amount) (src/Vault.sol#36)
+Reentrancy in Vault.withdrawAll() (src/Vault.sol#51-61):
+	External calls:
+	- (ok,None) = msg.sender.call{value: saldo}() (src/Vault.sol#58)
+	Event emitted after the call(s):
+	- Withdraw(msg.sender,saldo) (src/Vault.sol#60)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-4
+INFO:Detectors:
+Detector: low-level-calls
+Low level call in Vault.withdraw(uint256) (src/Vault.sol#26-37):
+	- (ok,None) = msg.sender.call{value: amount}() (src/Vault.sol#33)
+Low level call in Vault.withdrawAll() (src/Vault.sol#51-61):
+	- (ok,None) = msg.sender.call{value: saldo}() (src/Vault.sol#58)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#low-level-calls
+INFO:Slither:src/Vault.sol analyzed (1 contracts with 102 detectors), 4 result(s) found
